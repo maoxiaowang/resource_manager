@@ -1,0 +1,77 @@
+version: '3.8'
+name: resource-manager
+
+services:
+  redis:
+    image: redis:7.2.4
+    container_name: resource-manager-redis
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - redis_data:/var/lib/redis
+      - redis_logs:/var/log/redis
+    expose:
+      - 6379
+    networks:
+      - resource_manager_network
+    environment:
+      - TZ=Asia/Shanghai
+    command: redis-server /etc/redis/redis.conf
+
+  postgres:
+    image: postgres:16.2-alpine
+    container_name: resource-manager-postgres
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - resource_manager_network
+    env_file:
+      - ./postgres/.env
+    environment:
+      - TZ=Asia/Shanghai
+
+  nginx:
+    container_name: resource-manager-nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - nginx_logs:/var/log/nginx
+      - django_static:/home/app/django/static
+      - django_media:/home/app/django/media
+    networks:
+      - resource_manager_network
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "1338:80"
+    depends_on:
+      - django
+
+  django:
+    container_name: resource-manager-django
+    build:
+      context: ./django
+      dockerfile: Dockerfile.django
+    restart: always
+    command: uvicorn DML.asgi:application --host 0.0.0.0 --port 8000 --workers 10 --lifespan off
+    volumes:
+      - django_logs:/home/app/django/logs
+      - django_media:/home/app/django/media
+      - django_static:/home/app/django/static
+      - django_migrations:/home/app/django/main/migrations
+    networks:
+      - resource_manager_network
+    expose:
+      - 8000
+    env_file:
+      - ./django/.env
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+      - postgres
+      - redis
