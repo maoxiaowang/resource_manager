@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -32,6 +31,11 @@ DEBUG = env.django.get_bool('DEBUG')
 
 ALLOWED_HOSTS = env.django.get_list('ALLOWED_HOSTS')
 
+DATABASE_NAME = env.database.get('NAME')
+DATABASE_USER = env.database.get('USER')
+DATABASE_PASSWORD = env.database.get('PASSWORD')
+DATABASE_HOST = env.database.get('HOST')
+DATABASE_PORT = env.database.get('PORT')
 
 # Application definition
 
@@ -80,8 +84,12 @@ WSGI_APPLICATION = 'resource_manager.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': DATABASE_HOST,  # 或者您的数据库主机地址
+        'PORT': DATABASE_PORT,       # 或者您的数据库端口
     }
 }
 
