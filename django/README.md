@@ -9,7 +9,7 @@ $ cd django
 ```shell
 $ python -m venv venv
 ```
-> Python版本要求3.10及以上
+> Python版本>=3.10
 
 ### 3. 激活虚拟环境
 #### Windows

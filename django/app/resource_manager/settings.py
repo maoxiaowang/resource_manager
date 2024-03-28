@@ -31,12 +31,6 @@ DEBUG = env.django.get_bool('DEBUG')
 
 ALLOWED_HOSTS = env.django.get_list('ALLOWED_HOSTS')
 
-DATABASE_NAME = env.database.get('NAME')
-DATABASE_USER = env.database.get('USER')
-DATABASE_PASSWORD = env.database.get('PASSWORD')
-DATABASE_HOST = env.database.get('HOST')
-DATABASE_PORT = env.database.get('PORT')
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -85,11 +79,11 @@ WSGI_APPLICATION = 'resource_manager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DATABASE_NAME,
-        'USER': DATABASE_USER,
-        'PASSWORD': DATABASE_PASSWORD,
-        'HOST': DATABASE_HOST,  # 或者您的数据库主机地址
-        'PORT': DATABASE_PORT,       # 或者您的数据库端口
+        'NAME': env.database.get('NAME'),
+        'USER': env.database.get('USER'),
+        'PASSWORD': env.database.get('PASSWORD'),
+        'HOST':  env.database.get('HOST'),  # 或者您的数据库主机地址
+        'PORT': env.database.get_int('PORT'),       # 或者您的数据库端口
     }
 }
 

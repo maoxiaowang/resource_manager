@@ -9,4 +9,5 @@ class EnvManager(object):
     django = EnvSection('django')
     database = EnvSection('database')
 
+
 env = EnvManager()
